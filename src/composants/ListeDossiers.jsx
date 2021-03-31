@@ -3,9 +3,48 @@ import Dossier from './Dossier';
 import * as crudDossiers from '../services/crud-dossiers';
 import { useState, useEffect } from 'react';
 
+// Importé de Material-UI
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import Button from "@material-ui/core/Button";
+
+const uStyle = makeStyles((bTheme) => ({
+  button: {
+    display: "block",
+    marginTop: bTheme.spacing(2)
+  },
+  formControl: {
+    margin: bTheme.spacing(1),
+    minWidth: 120
+  }
+}));
+// Fin partie 1
+
 export default function ListeDossiers({utilisateur, etatDossiers}) {
   // État des dossiers (vient du composant Appli)
   const [dossiers, setDossiers] = etatDossiers;
+
+  const classes = uStyle();
+  const [tDossier, setTDossier] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+
+  const handleChange = (event) => {
+    setTDossier(event.target.value);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+
 
   // Lire les dossiers dans Firestore et forcer le réaffichage du composant
   // Remarquez que ce code est dans un useEffect() car on veut l'exécuter 
@@ -37,6 +76,40 @@ export default function ListeDossiers({utilisateur, etatDossiers}) {
   
   return (
     <>
+     <div>
+      <Button className={classes.button} onClick={handleOpen}>
+        Tri des dossiers
+      </Button>
+      <FormControl className={classes.formControl}>
+        <InputLabel id="demo-controlled-open-select-label"></InputLabel>
+        <Select
+          labelId="demo-controlled-open-select-label"
+          id="demo-controlled-open-select"
+          open={open}
+          onClose={handleClose}
+          onOpen={handleOpen}
+          value={tDossier}
+          defaultValue={10}
+          onChange={handleChange}
+        >
+          {/* <MenuItem value="">
+            <em>None</em>
+          </MenuItem> */}
+          <MenuItem value={10} 
+          // onClose={crudDossiers.lireTout(utilisateur).get()
+          >Date de modificaton descendante</MenuItem>
+          
+          <MenuItem value={20} 
+          // onClose={crudDossiers.lireDosAscendent(utilisateur).get()
+          >Nom de dossier ascendant</MenuItem>
+          
+          <MenuItem value={30} 
+          // onClose={crudDossiers.lireDosDescendent(utilisateur).get()
+          >Nom de dossier descendant</MenuItem>
+        </Select>
+      </FormControl>
+    </div>
+
     <ul className="ListeDossiers">
       {
         (dossiers.length > 0) ?

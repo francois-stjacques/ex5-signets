@@ -24,7 +24,7 @@ export async function lireTout(uid) {
   const dossiers = [];
   /************************************************************** Exercice #5 : question A **************************/
   // Modifier très légèrement la ligne suivante
-  const reponse = await firestore.collection(utilRef).doc(uid).collection(dossRef).get();
+  const reponse = await firestore.collection(utilRef).doc(uid).collection(dossRef).orderBy("datemodif", "desc").get();
   reponse.forEach(
     doc => {
       dossiers.push({id: doc.id, ...doc.data()})
@@ -32,6 +32,36 @@ export async function lireTout(uid) {
   );
   return dossiers;
 }
+
+
+// Réponse au point E de l'exercice #5
+/**
+ * @param {String} uid identifiant d'utilisateur Firebase
+ */
+// export async function lireDosAscendent(uid) {
+//   const dossiers1 = [];
+//   const reponse1 = await firestore.collection(utilRef).doc(uid).collection(dossRef).orderBy("nom").get();
+//   reponse1.forEach(
+//     doc => {
+//       dossiers1.push({id: doc.id, ...doc.data()})
+//     }
+//   );
+//   return dossiers1;
+// }
+
+/**
+ * @param {String} uid identifiant d'utilisateur Firebase
+ */
+//  export async function lireDosDescendent(uid) {
+//   const dossiers2 = [];
+//   const reponse2 = await firestore.collection(utilRef).doc(uid).collection(dossRef).orderBy("nom", "desc").get();
+//   reponse2.forEach(
+//     doc => {
+//       dossiers2.push({id: doc.id, ...doc.data()})
+//     }
+//   );
+//   return dossiers2;
+// }
 
 /**
  * Supprimer un dossier pour l'utilisateur connecté
@@ -42,8 +72,9 @@ export async function lireTout(uid) {
 export async function supprimer(uid, idd) {
   /************************************************************** Exercice #5 : question B **************************/
   // Une seule ligne de code suffit
-  // return await [votre instruction pour supprimer le dossier de l'utilisateur connecté dans Firestore ici];
+  return await firestore.collection(utilRef).doc(uid).collection(dossRef).doc(idd).delete();
 }
+
 
 /**
  * Modifier un dossier de l'utilisateur connecté (pas implémenté dans cet exercice)
